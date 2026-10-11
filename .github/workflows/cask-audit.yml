@@ -2,15 +2,11 @@ name: Cask audit
 
 on:
   pull_request:
-    paths:
-      - "Casks/**"
-      - ".github/workflows/cask-audit.yml"
+    branches:
+      - main
   push:
     branches:
       - main
-    paths:
-      - "Casks/**"
-      - ".github/workflows/cask-audit.yml"
 
 permissions:
   contents: read
