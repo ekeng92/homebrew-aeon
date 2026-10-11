@@ -1,0 +1,40 @@
+name: Cask audit
+
+on:
+  pull_request:
+    paths:
+      - "Casks/**"
+      - ".github/workflows/cask-audit.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Casks/**"
+      - ".github/workflows/cask-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  cask-audit:
+    name: cask-audit
+    runs-on: macos-14
+    timeout-minutes: 20
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Audit Casks
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          casks=(Casks/*.rb)
+          if (( ${#casks[@]} == 0 )); then
+            printf '%s\n' "No Casks are published yet."
+            exit 0
+          fi
+
+          brew update
+          brew audit --cask --strict "${casks[@]}"
+          brew style "${casks[@]}"
